@@ -1,4 +1,4 @@
-module forGraphBLASGo
+module github.com/intel/forGraphBLASGo
 
 go 1.18
 
