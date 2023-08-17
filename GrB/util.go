@@ -4,6 +4,7 @@ package GrB
 import "C"
 import (
 	"math"
+	"slices"
 	"unsafe"
 )
 
@@ -90,20 +91,9 @@ func growslice[T any](sptr *[]T, n int) (newSection []T) {
 		return nil
 	}
 	s := *sptr
-	if n < 0 {
-		panic("negative size")
-	}
-	if len(s)+n < 0 {
-		panic("overflow")
-	}
-	if len(s)+n <= cap(s) {
-		*sptr = s[:len(s)+n]
-		return s[len(s) : len(s)+n]
-	}
-	t := make([]T, len(s)+n)
-	copy(t, s)
-	*sptr = t
-	return t[len(s):]
+	t := slices.Grow(s, n)
+	*sptr = t[:len(s)+n]
+	return t[len(s) : len(s)+n]
 }
 
 func gotocbool(b bool) C.int32_t {
@@ -147,22 +137,10 @@ func growIndices(indicesPtr *[]int, n int) (newSection *C.GrB_Index, finalize fu
 		return nil, func() {}
 	}
 	indices := *indicesPtr
-	var extended []int
+	extended := slices.Grow(indices, n)[:len(indices)+n]
 	defer func() {
 		*indicesPtr = extended
 	}()
-	if n < 0 {
-		panic("negative size")
-	}
-	if len(indices)+n < 0 {
-		panic("overflow")
-	}
-	if len(indices)+n <= cap(indices) {
-		extended = indices[:len(indices)+n]
-	} else {
-		extended = make([]int, len(indices)+n)
-		copy(extended, indices)
-	}
 	if unsafe.Sizeof(0) == 4 {
 		t := len(indices)
 		ns := make([]uint64, n)
