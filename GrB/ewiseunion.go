@@ -30,22 +30,6 @@ func VectorEWiseUnion[Dw, Du, Dv any](
 	return makeError(info)
 }
 
-// EWiseUnion is the method variant of [VectorEWiseUnion].
-//
-// EWiseUnion is a SuiteSparse:GraphBLAS extension.
-func (vector Vector[D]) EWiseUnion(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	u Vector[D],
-	alpha Scalar[D],
-	v Vector[D],
-	beta Scalar[D],
-	desc *Descriptor,
-) error {
-	return VectorEWiseUnion(vector, mask, accum, op, u, alpha, v, beta, desc)
-}
-
 // MatrixEWiseUnion is like [MatrixEWiseAddBinaryOp], except that two scalars are used to
 // define how to compute the result when entries are present in one of the two input matrices
 // (a and b), but no the other. Each of the two input scalars alpha and beta must contain
@@ -71,20 +55,4 @@ func MatrixEWiseUnion[DC, DA, DB any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// EWiseUnion is the method variant of [MatrixEWiseUnion].
-//
-// EWiseUnion is a SuiteSparse:GraphBLAS extension.
-func (matrix Matrix[D]) EWiseUnion(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	a Matrix[D],
-	alpha Scalar[D],
-	b Matrix[D],
-	beta Scalar[D],
-	desc *Descriptor,
-) error {
-	return MatrixEWiseUnion(matrix, mask, accum, op, a, alpha, b, beta, desc)
 }

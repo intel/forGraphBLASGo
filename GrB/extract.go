@@ -53,17 +53,6 @@ func VectorExtract[D any](
 	return makeError(info)
 }
 
-// Extract is the method variant of [VectorExtract].
-func (vector Vector[D]) Extract(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	u Vector[D],
-	indices []int,
-	desc *Descriptor,
-) error {
-	return VectorExtract(vector, mask, accum, u, indices, desc)
-}
-
 // MatrixExtract extracts a sub-matrix from a larger matrix as specified by a set of row indices and a set of column
 // indices. The result is a matrix whose size is equal to the size of the sets of indices.
 //
@@ -124,17 +113,6 @@ func MatrixExtract[D any](
 	return makeError(info)
 }
 
-// Extract is the method variant of [MatrixExtract].
-func (matrix Matrix[D]) Extract(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	a Matrix[D],
-	rowIndices, colIndices []int,
-	desc *Descriptor,
-) error {
-	return MatrixExtract(matrix, mask, accum, a, rowIndices, colIndices, desc)
-}
-
 // MatrixColExtract extracts elements from one column of a matrix into a vector. Note that with the transpose
 // descriptor for the source matrix, elements of an arbitrary row of the matrix can be extracted with this function
 // as well.
@@ -190,16 +168,4 @@ func MatrixColExtract[D any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// ColExtract is the method variant of [MatrixColExtract].
-func (vector Vector[D]) ColExtract(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	a Matrix[D],
-	rowIndices []int,
-	colIndex int,
-	desc *Descriptor,
-) error {
-	return MatrixColExtract(vector, mask, accum, a, rowIndices, colIndex, desc)
 }

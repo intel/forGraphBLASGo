@@ -52,18 +52,6 @@ func VectorEWiseAddSemiring[Dw, Du, Dv any](
 	return makeError(info)
 }
 
-// EWiseAddSemiring is the method variant of [VectorEWiseAddSemiring].
-func (vector Vector[D]) EWiseAddSemiring(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op Semiring[D, D, D],
-	u Vector[D],
-	v Vector[D],
-	desc *Descriptor,
-) error {
-	return VectorEWiseAddSemiring(vector, mask, accum, op, u, v, desc)
-}
-
 // VectorEWiseAddMonoid is like [VectorEWiseAddSemiring], except that a [Monoid] is used instead of a [Semiring]
 // to specify the binary operator op. The identity element of the monoid is ignored.
 func VectorEWiseAddMonoid[D any](
@@ -83,18 +71,6 @@ func VectorEWiseAddMonoid[D any](
 	return makeError(info)
 }
 
-// EWiseAddMonoid is the method variant of [VectorEWiseAddMonoid].
-func (vector Vector[D]) EWiseAddMonoid(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op Monoid[D],
-	u Vector[D],
-	v Vector[D],
-	desc *Descriptor,
-) error {
-	return VectorEWiseAddMonoid(vector, mask, accum, op, u, v, desc)
-}
-
 // VectorEWiseAddBinaryOp is like [VectorEWiseAddSemiring], except that a [BinaryOp] is used instead of a [Semiring]
 // to specify the binary operator op.
 func VectorEWiseAddBinaryOp[Dw, Du, Dv any](
@@ -112,18 +88,6 @@ func VectorEWiseAddBinaryOp[Dw, Du, Dv any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// EWiseAddBinaryOp is the method variant of [VectorEWiseAddBinaryOp].
-func (vector Vector[D]) EWiseAddBinaryOp(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	u Vector[D],
-	v Vector[D],
-	desc *Descriptor,
-) error {
-	return VectorEWiseAddBinaryOp(vector, mask, accum, op, u, v, desc)
 }
 
 // MatrixEWiseAddSemiring performs element-wise (general) addition on the elements of two matrices, producing a third
@@ -175,18 +139,6 @@ func MatrixEWiseAddSemiring[DC, DA, DB any](
 	return makeError(info)
 }
 
-// EWiseAddSemiring is the method variant of [MatrixEWiseAddSemiring].
-func (matrix Matrix[D]) EWiseAddSemiring(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op Semiring[D, D, D],
-	a Matrix[D],
-	b Matrix[D],
-	desc *Descriptor,
-) error {
-	return MatrixEWiseAddSemiring(matrix, mask, accum, op, a, b, desc)
-}
-
 // MatrixEWiseAddMonoid is like [MatrixEWiseAddSemiring], except that a [Monoid] is used instead of a [Semiring]
 // to specify the binary operator op. The identity element of the monoid is ignored.
 func MatrixEWiseAddMonoid[D any](
@@ -206,18 +158,6 @@ func MatrixEWiseAddMonoid[D any](
 	return makeError(info)
 }
 
-// EWiseAddMonoid is the method variant of [MatrixEWiseAddMonoid].
-func (matrix Matrix[D]) EWiseAddMonoid(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op Monoid[D],
-	a Matrix[D],
-	b Matrix[D],
-	desc *Descriptor,
-) error {
-	return MatrixEWiseAddMonoid(matrix, mask, accum, op, a, b, desc)
-}
-
 // MatrixEWiseAddBinaryOp is like [MatrixEWiseAddSemiring], except that a [BinaryOp] is used instead of a [Semiring]
 // to specify the binary operator op.
 func MatrixEWiseAddBinaryOp[DC, DA, DB any](
@@ -235,16 +175,4 @@ func MatrixEWiseAddBinaryOp[DC, DA, DB any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// EWiseAddBinaryOp is the method variant of [MatrixEWiseAddBinaryOp].
-func (matrix Matrix[D]) EWiseAddBinaryOp(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	a Matrix[D],
-	b Matrix[D],
-	desc *Descriptor,
-) error {
-	return MatrixEWiseAddBinaryOp(matrix, mask, accum, op, a, b, desc)
 }

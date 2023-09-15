@@ -94,18 +94,6 @@ func VectorSelect[D, T any](
 	return makeError(info)
 }
 
-// Select is the method variant of [VectorSelect].
-func (vector Vector[D]) Select(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op IndexUnaryOp[bool, D, D],
-	u Vector[D],
-	val D,
-	desc *Descriptor,
-) error {
-	return VectorSelect(vector, mask, accum, op, u, val, desc)
-}
-
 // VectorSelectScalar is like [VectorSelect], except that the scalar value is passed as a [Scalar]
 // object. It must not be empty.
 //
@@ -129,18 +117,6 @@ func VectorSelectScalar[D, T any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// SelectScalar is the method variant of [VectorSelectScalar].
-func (vector Vector[D]) SelectScalar(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op IndexUnaryOp[bool, D, D],
-	u Vector[D],
-	val Scalar[D],
-	desc *Descriptor,
-) error {
-	return VectorSelectScalar(vector, mask, accum, op, u, val, desc)
 }
 
 // MatrixSelect applies a select operator (an index unary operator to the elements of a matrix to determine
@@ -233,18 +209,6 @@ func MatrixSelect[D, T any](
 	return makeError(info)
 }
 
-// Select is the method variant of [MatrixSelect].
-func (matrix Matrix[D]) Select(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op IndexUnaryOp[bool, D, D],
-	a Matrix[D],
-	val D,
-	desc *Descriptor,
-) error {
-	return MatrixSelect(matrix, mask, accum, op, a, val, desc)
-}
-
 // MatrixSelectScalar is like [MatrixSelect], except that the scalar value is passed as a [Scalar]
 // object. It must not be empty.
 //
@@ -268,16 +232,4 @@ func MatrixSelectScalar[D, T any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// SelectScalar is the method variant of [MatrixSelectScalar].
-func (matrix Matrix[D]) SelectScalar(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op IndexUnaryOp[bool, D, D],
-	a Matrix[D],
-	val Scalar[D],
-	desc *Descriptor,
-) error {
-	return MatrixSelectScalar(matrix, mask, accum, op, a, val, desc)
 }

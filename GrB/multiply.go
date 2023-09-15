@@ -48,17 +48,6 @@ func MxM[DC, DA, DB any](
 	return makeError(info)
 }
 
-// MxM is the method variant of [MxM].
-func (matrix Matrix[D]) MxM(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op Semiring[D, D, D],
-	a Matrix[D],
-	b Matrix[D],
-	desc *Descriptor) error {
-	return MxM(matrix, mask, accum, op, a, b, desc)
-}
-
 // VxM multiplies a (row) vector with a matrix on a semiring. The result is a vector.
 //
 // Parameters:
@@ -105,17 +94,6 @@ func VxM[Dw, Du, DA any](
 	return makeError(info)
 }
 
-// VxM is the method variant of [VxM].
-func (vector Vector[D]) VxM(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op Semiring[D, D, D],
-	u Vector[D],
-	a Matrix[D],
-	desc *Descriptor) error {
-	return VxM(vector, mask, accum, op, u, a, desc)
-}
-
 // MxV multiplies a matrix by a vector on a semiring. The result is a vector.
 //
 // Parameters:
@@ -160,15 +138,4 @@ func MxV[Dw, DA, Du any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// MxV is the method variant of [MxV].
-func (vector Vector[D]) MxV(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op Semiring[D, D, D],
-	a Matrix[D],
-	u Vector[D],
-	desc *Descriptor) error {
-	return MxV(vector, mask, accum, op, a, u, desc)
 }

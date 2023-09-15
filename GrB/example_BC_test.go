@@ -47,7 +47,7 @@ func BetweennessCentrality(A GrB.Matrix[bool], s GrB.Index) (delta GrB.Vector[fl
 	}()
 
 	// get the first set of out neighbors
-	GrB.OK(q.VxM(p.AsMask(), nil, GrB.PlusTimesSemiring[int](), q, GrB.MatrixView[int, bool](A), GrB.DescRC))
+	GrB.OK(GrB.VxM(q, p.AsMask(), nil, GrB.PlusTimesSemiring[int](), q, GrB.MatrixView[int, bool](A), GrB.DescRC))
 
 	/*
 	 * BFS phase
@@ -58,13 +58,13 @@ func BetweennessCentrality(A GrB.Matrix[bool], s GrB.Index) (delta GrB.Vector[fl
 	// sum == 0 when BFS phase is complete
 	for sum := 1; sum > 0; {
 		// sigma[d,:] = q
-		GrB.OK(sigma.RowAssign(nil, nil, q, d, GrB.All(n), nil))
+		GrB.OK(GrB.MatrixRowAssign(sigma, nil, nil, q, d, GrB.All(n), nil))
 		// accum path counts on this level
-		GrB.OK(p.EWiseAddBinaryOp(nil, nil, GrB.Plus[int](), p, q, nil))
+		GrB.OK(GrB.VectorEWiseAddBinaryOp(p, nil, nil, GrB.Plus[int](), p, q, nil))
 		// q = #paths to nodes reachable from current level
-		GrB.OK(q.VxM(p.AsMask(), nil, GrB.PlusTimesSemiring[int](), q, GrB.MatrixView[int, bool](A), GrB.DescRC))
+		GrB.OK(GrB.VxM(q, p.AsMask(), nil, GrB.PlusTimesSemiring[int](), q, GrB.MatrixView[int, bool](A), GrB.DescRC))
 		// sum path counts at this level
-		sum, err = q.Reduce(GrB.PlusMonoid[int](), nil)
+		sum, err = GrB.VectorReduce(GrB.PlusMonoid[int](), q, nil)
 		d++
 	}
 
@@ -95,20 +95,20 @@ func BetweennessCentrality(A GrB.Matrix[bool], s GrB.Index) (delta GrB.Vector[fl
 
 	for i := d - 1; i > 0; i-- {
 		// t1 = 1+delta
-		GrB.OK(t1.AssignConstant(nil, nil, 1, GrB.All(n), nil))
-		GrB.OK(t1.EWiseAddBinaryOp(nil, nil, GrB.Plus[float32](), t1, delta, nil))
+		GrB.OK(GrB.VectorAssignConstant(t1, nil, nil, 1, GrB.All(n), nil))
+		GrB.OK(GrB.VectorEWiseAddBinaryOp(t1, nil, nil, GrB.Plus[float32](), t1, delta, nil))
 		// t2 = sigma[i,:]
-		GrB.OK(t2.ColExtract(nil, nil, GrB.MatrixView[float32, int](sigma), GrB.All(n), i, GrB.DescT0))
+		GrB.OK(GrB.MatrixColExtract(t2, nil, nil, GrB.MatrixView[float32, int](sigma), GrB.All(n), i, GrB.DescT0))
 		// t2 = (1+delta)/sigma[i,:]
-		GrB.OK(t2.EWiseMultBinaryOp(nil, nil, GrB.Div[float32](), t1, t2, nil))
+		GrB.OK(GrB.VectorEWiseMultBinaryOp(t2, nil, nil, GrB.Div[float32](), t1, t2, nil))
 		// add contributions made by successors of a node
-		GrB.OK(t3.MxV(nil, nil, GrB.PlusTimesSemiring[float32](), GrB.MatrixView[float32, bool](A), t2, nil))
+		GrB.OK(GrB.MxV(t3, nil, nil, GrB.PlusTimesSemiring[float32](), GrB.MatrixView[float32, bool](A), t2, nil))
 		// t4 = sigma[i-1,:]
-		GrB.OK(t4.ColExtract(nil, nil, GrB.MatrixView[float32, int](sigma), GrB.All(n), i-1, GrB.DescT0))
+		GrB.OK(GrB.MatrixColExtract(t4, nil, nil, GrB.MatrixView[float32, int](sigma), GrB.All(n), i-1, GrB.DescT0))
 		// t4 = sigma[i-1,:]*t3
-		GrB.OK(t4.EWiseMultBinaryOp(nil, nil, GrB.Times[float32](), t4, t3, nil))
+		GrB.OK(GrB.VectorEWiseMultBinaryOp(t4, nil, nil, GrB.Times[float32](), t4, t3, nil))
 		// accumulate into delta
-		GrB.OK(delta.EWiseAddBinaryOp(nil, nil, GrB.Plus[float32](), delta, t4, nil))
+		GrB.OK(GrB.VectorEWiseAddBinaryOp(delta, nil, nil, GrB.Plus[float32](), delta, t4, nil))
 	}
 
 	return delta, nil

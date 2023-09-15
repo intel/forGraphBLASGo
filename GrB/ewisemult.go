@@ -53,18 +53,6 @@ func VectorEWiseMultSemiring[Dw, Du, Dv any](
 	return makeError(info)
 }
 
-// EWiseMultSemiring is the method variant of [VectorEWiseMultSemiring].
-func (vector Vector[D]) EWiseMultSemiring(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op Semiring[D, D, D],
-	u Vector[D],
-	v Vector[D],
-	desc *Descriptor,
-) error {
-	return VectorEWiseMultSemiring(vector, mask, accum, op, u, v, desc)
-}
-
 // VectorEWiseMultMonoid is like [VectorEWiseMultSemiring], except that a [Monoid] is used instead of a [Semiring]
 // to specify the binary operator op. The identity element of the monoid is ignored.
 func VectorEWiseMultMonoid[D any](
@@ -84,18 +72,6 @@ func VectorEWiseMultMonoid[D any](
 	return makeError(info)
 }
 
-// EWiseMultMonoid is the method variant of [VectorEWiseMultMonoid].
-func (vector Vector[D]) EWiseMultMonoid(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op Monoid[D],
-	u Vector[D],
-	v Vector[D],
-	desc *Descriptor,
-) error {
-	return VectorEWiseMultMonoid(vector, mask, accum, op, u, v, desc)
-}
-
 // VectorEWiseMultBinaryOp is like [VectorEWiseMultSemiring], except that a [BinaryOp] is used instead of a [Semiring]
 // to specify the binary operator op.
 func VectorEWiseMultBinaryOp[Dw, Du, Dv any](
@@ -113,18 +89,6 @@ func VectorEWiseMultBinaryOp[Dw, Du, Dv any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// EWiseMultBinaryOp is the method variant of [VectorEWiseMultBinaryOp].
-func (vector Vector[D]) EWiseMultBinaryOp(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	u Vector[D],
-	v Vector[D],
-	desc *Descriptor,
-) error {
-	return VectorEWiseMultBinaryOp(vector, mask, accum, op, u, v, desc)
 }
 
 // MatrixEWiseMultSemiring performs element-wise (general) multiplication on the intersection of the elements of two
@@ -177,18 +141,6 @@ func MatrixEWiseMultSemiring[DC, DA, DB any](
 	return makeError(info)
 }
 
-// EWiseMultSemiring is the method variant of [MatrixEWiseMultSemiring].
-func (matrix Matrix[D]) EWiseMultSemiring(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op Semiring[D, D, D],
-	a Matrix[D],
-	b Matrix[D],
-	desc *Descriptor,
-) error {
-	return MatrixEWiseMultSemiring(matrix, mask, accum, op, a, b, desc)
-}
-
 // MatrixEWiseMultMonoid is like [MatrixEWiseMultSemiring], except that a [Monoid] is used instead of a [Semiring]
 // to specify the binary operator op. The identity element of the monoid is ignored.
 func MatrixEWiseMultMonoid[D any](
@@ -208,18 +160,6 @@ func MatrixEWiseMultMonoid[D any](
 	return makeError(info)
 }
 
-// EWiseMultMonoid is the method variant of [MatrixEWiseMultMonoid].
-func (matrix Matrix[D]) EWiseMultMonoid(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op Monoid[D],
-	a Matrix[D],
-	b Matrix[D],
-	desc *Descriptor,
-) error {
-	return MatrixEWiseMultMonoid(matrix, mask, accum, op, a, b, desc)
-}
-
 // MatrixEWiseMultBinaryOp is like [MatrixEWiseMultSemiring], except that a [BinaryOp] is used instead of a [Semiring]
 // to specify the binary operator op.
 func MatrixEWiseMultBinaryOp[DC, DA, DB any](
@@ -237,16 +177,4 @@ func MatrixEWiseMultBinaryOp[DC, DA, DB any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// EWiseMultBinaryOp is the method variant of [MatrixEWiseMultBinaryOp].
-func (matrix Matrix[D]) EWiseMultBinaryOp(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	a Matrix[D],
-	b Matrix[D],
-	desc *Descriptor,
-) error {
-	return MatrixEWiseMultBinaryOp(matrix, mask, accum, op, a, b, desc)
 }

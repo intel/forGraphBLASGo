@@ -49,7 +49,7 @@ func BatchedBetweennessCentrality(A GrB.Matrix[bool], s []GrB.Index) (delta GrB.
 	defer func() {
 		GrB.OK(frontier.Free())
 	}()
-	GrB.OK(frontier.Extract(numsp.AsMask(), nil, GrB.MatrixView[int, bool](A), GrB.All(n), s, GrB.DescRCT0))
+	GrB.OK(GrB.MatrixExtract(frontier, numsp.AsMask(), nil, GrB.MatrixView[int, bool](A), GrB.All(n), s, GrB.DescRCT0))
 
 	// sigma: stores frontier information for each level of BFS phase. The memory
 	// for an entry in sigmas is only allocated within the for-loop if needed.
@@ -66,11 +66,11 @@ func BatchedBetweennessCentrality(A GrB.Matrix[bool], s []GrB.Index) (delta GrB.
 		sigmas = append(sigmas, sigma)
 
 		// sigmas[level](:,:) = bool(frontier)
-		GrB.OK(sigma.Apply(nil, nil, GrB.Identity[bool](), GrB.MatrixView[bool, int](frontier), nil))
+		GrB.OK(GrB.MatrixApply(sigma, nil, nil, GrB.Identity[bool](), GrB.MatrixView[bool, int](frontier), nil))
 		// numsp += frontier (accum path counts)
-		GrB.OK(numsp.EWiseAddBinaryOp(nil, nil, GrB.Plus[int](), numsp, frontier, nil))
+		GrB.OK(GrB.MatrixEWiseAddBinaryOp(numsp, nil, nil, GrB.Plus[int](), numsp, frontier, nil))
 		// f<!numsp> = A' +.* f (update frontier)
-		GrB.OK(frontier.MxM(numsp.AsMask(), nil, GrB.PlusTimesSemiring[int](), GrB.MatrixView[int, bool](A), frontier, GrB.DescRCT0))
+		GrB.OK(GrB.MxM(frontier, numsp.AsMask(), nil, GrB.PlusTimesSemiring[int](), GrB.MatrixView[int, bool](A), frontier, GrB.DescRCT0))
 		// number of nodes in frontier at this level
 		nvals, err = frontier.Nvals()
 		GrB.OK(err)
@@ -83,7 +83,7 @@ func BatchedBetweennessCentrality(A GrB.Matrix[bool], s []GrB.Index) (delta GrB.
 		GrB.OK(nspinv.Free())
 	}()
 	// nspinv = 1/numsp
-	GrB.OK(nspinv.Apply(nil, nil, GrB.Minv[float32](), GrB.MatrixView[float32, int](numsp), nil))
+	GrB.OK(GrB.MatrixApply(nspinv, nil, nil, GrB.Minv[float32](), GrB.MatrixView[float32, int](numsp), nil))
 
 	// bcu: BC updates for each vertex for each starting vertex in s
 	bcu, err := GrB.MatrixNew[float32](n, len(s))
@@ -92,7 +92,7 @@ func BatchedBetweennessCentrality(A GrB.Matrix[bool], s []GrB.Index) (delta GrB.
 		GrB.OK(bcu.Free())
 	}()
 	// filled with 1 to avoid sparsity issues
-	GrB.OK(bcu.AssignConstant(nil, nil, 1, GrB.All(n), GrB.All(len(s)), nil))
+	GrB.OK(GrB.MatrixAssignConstant(bcu, nil, nil, 1, GrB.All(n), GrB.All(len(s)), nil))
 
 	// temporary workspace matrix
 	w, err := GrB.MatrixNew[float32](n, len(s))
@@ -106,19 +106,19 @@ func BatchedBetweennessCentrality(A GrB.Matrix[bool], s []GrB.Index) (delta GrB.
 	// Tally phase (backward sweep)
 	for i := len(sigmas) - 1; i > 0; i-- {
 		// w<sigmas[i]> = (1 ./ nsp) .* bcu
-		GrB.OK(w.EWiseMultBinaryOp(sigmas[i].AsMask(), nil, GrB.Times[float32](), bcu, nspinv, GrB.DescR))
+		GrB.OK(GrB.MatrixEWiseMultBinaryOp(w, sigmas[i].AsMask(), nil, GrB.Times[float32](), bcu, nspinv, GrB.DescR))
 
 		// add contributions by successors and mask with that BFS level's frontier
 		// w<sigmas[i-1]> = (A +.* w)
-		GrB.OK(w.MxM(sigmas[i-1].AsMask(), nil, GrB.PlusTimesSemiring[float32](), GrB.MatrixView[float32, bool](A), w, GrB.DescR))
+		GrB.OK(GrB.MxM(w, sigmas[i-1].AsMask(), nil, GrB.PlusTimesSemiring[float32](), GrB.MatrixView[float32, bool](A), w, GrB.DescR))
 		// bcu += w .* numsp
-		GrB.OK(bcu.EWiseMultBinaryOp(nil, &plusFloat32, GrB.Times[float32](), w, GrB.MatrixView[float32, int](numsp), nil))
+		GrB.OK(GrB.MatrixEWiseMultBinaryOp(bcu, nil, &plusFloat32, GrB.Times[float32](), w, GrB.MatrixView[float32, int](numsp), nil))
 	}
 
 	// row reduce bcu and subtract "len(s)" from every entry to account
 	// for 1 extra value per bcu row element.
-	GrB.OK(delta.MatrixReduceBinaryOp(nil, nil, GrB.Plus[float32](), bcu, nil))
-	GrB.OK(delta.ApplyBinaryOp2nd(nil, nil, GrB.Minus[float32](), delta, float32(len(s)), nil))
+	GrB.OK(GrB.MatrixReduceBinaryOp(delta, nil, nil, GrB.Plus[float32](), bcu, nil))
+	GrB.OK(GrB.VectorApplyBinaryOp2nd(delta, nil, nil, GrB.Minus[float32](), delta, float32(len(s)), nil))
 
 	return delta, nil
 }

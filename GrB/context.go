@@ -158,14 +158,3 @@ func ContextDisengage(context *Context) error {
 	}
 	return makeError(info)
 }
-
-// Disengage is the method variant of [ContextDisengage].
-//
-// Disengage is a SuiteSparse:GraphBLAS extension.
-func (context Context) Disengage() error {
-	info := Info(C.GxB_Context_disengage(context.grb))
-	if info == success {
-		return nil
-	}
-	return makeError(info)
-}

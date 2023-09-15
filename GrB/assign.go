@@ -56,17 +56,6 @@ func VectorAssign[D any](
 	return makeError(info)
 }
 
-// Assign is the method variant of [VectorAssign].
-func (vector Vector[D]) Assign(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	u Vector[D],
-	indices []int,
-	desc *Descriptor,
-) error {
-	return VectorAssign(vector, mask, accum, u, indices, desc)
-}
-
 // MatrixAssign assigns values from one GraphBLAS matrix to a subset of a matrix as specified by a set of indices.
 // The dimensions of the input matrix are the same size as the row and column index slices provided.
 //
@@ -131,17 +120,6 @@ func MatrixAssign[D any](
 	return makeError(info)
 }
 
-// Assign is the method variant of [MatrixAssign].
-func (matrix Matrix[D]) Assign(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	a Matrix[D],
-	rowIndices, colIndices []int,
-	desc *Descriptor,
-) error {
-	return MatrixAssign(matrix, mask, accum, a, rowIndices, colIndices, desc)
-}
-
 // MatrixColAssign assigns the contents of a vector to a subset of elements in one column of a matrix.
 // Note that since the output cannot be transposed, [MatrixRowAssign] is also provided to
 // assign to a row of a matrix.
@@ -201,18 +179,6 @@ func MatrixColAssign[D any](
 	return makeError(info)
 }
 
-// ColAssign is the method variant of [MatrixColAssign].
-func (matrix Matrix[D]) ColAssign(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	u Vector[D],
-	rowIndices []int,
-	colIndex int,
-	desc *Descriptor,
-) error {
-	return MatrixColAssign(matrix, mask, accum, u, rowIndices, colIndex, desc)
-}
-
 // MatrixRowAssign assigns the contents of a vector to a subset of elements in one row of a matrix.
 // Note that since the output cannot be transposed, [MatrixColAssign] is also provided to
 // assign to a column of a matrix.
@@ -270,18 +236,6 @@ func MatrixRowAssign[D any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// RowAssign is the method variant of [MatrixRowAssign].
-func (matrix Matrix[D]) RowAssign(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	u Vector[D],
-	rowIndex int,
-	colIndices []int,
-	desc *Descriptor,
-) error {
-	return MatrixRowAssign(matrix, mask, accum, u, rowIndex, colIndices, desc)
 }
 
 // VectorAssignConstant assigns the same value to a subset of a vector as specified by a set of indices.
@@ -381,17 +335,6 @@ func VectorAssignConstant[D any](
 	return makeError(info)
 }
 
-// AssignConstant is the method variant of [VectorAssignConstant].
-func (vector Vector[D]) AssignConstant(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	val D,
-	indices []int,
-	desc *Descriptor,
-) error {
-	return VectorAssignConstant(vector, mask, accum, val, indices, desc)
-}
-
 // VectorAssignScalar is like [VectorAssignConstant], except that the scalar value is passed as a [Scalar]
 // object. It may be empty.
 func VectorAssignScalar[D any](
@@ -412,17 +355,6 @@ func VectorAssignScalar[D any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// AssignScalar is the method variant of [VectorAssignScalar].
-func (vector Vector[D]) AssignScalar(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	val Scalar[D],
-	indices []int,
-	desc *Descriptor,
-) error {
-	return VectorAssignScalar(vector, mask, accum, val, indices, desc)
 }
 
 // MatrixAssignConstant assigns the same value to a subset of a matrix as specified by a set of indices.
@@ -535,17 +467,6 @@ func MatrixAssignConstant[D any](
 	return makeError(info)
 }
 
-// AssignConstant is the method variant of [MatrixAssignConstant].
-func (matrix Matrix[D]) AssignConstant(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	val D,
-	rowIndices, colIndices []int,
-	desc *Descriptor,
-) error {
-	return MatrixAssignConstant(matrix, mask, accum, val, rowIndices, colIndices, desc)
-}
-
 // MatrixAssignScalar is like [MatrixAssignConstant], except that the scalar value is passed as a [Scalar]
 // object. It may be empty.
 func MatrixAssignScalar[D any](
@@ -570,15 +491,4 @@ func MatrixAssignScalar[D any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// AssignScalar is the method variant of [MatrixAssignScalar].
-func (matrix Matrix[D]) AssignScalar(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	val Scalar[D],
-	rowIndices, colIndices []int,
-	desc *Descriptor,
-) error {
-	return MatrixAssignScalar(matrix, mask, accum, val, rowIndices, colIndices, desc)
 }

@@ -50,7 +50,7 @@ func LevelBreadthFirstSearchUsingApply(A GrB.Matrix[bool], s GrB.Index) (v GrB.V
 		// v[q] = level
 		GrB.OK(GrB.VectorApplyBinaryOp2nd(v, nil, &accum, GrB.Second[bool, int](), q, level, nil))
 		// q [!v] = q ||.&& A ; finds all the unvisited successors from current q
-		GrB.OK(q.VxM(v.AsMask(), nil, GrB.LorLandSemiringBool, q, A, GrB.DescRC))
+		GrB.OK(GrB.VxM(q, v.AsMask(), nil, GrB.LorLandSemiringBool, q, A, GrB.DescRC))
 
 		nvals, err = q.Nvals()
 		GrB.OK(err)

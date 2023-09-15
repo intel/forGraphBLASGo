@@ -4,7 +4,7 @@ package GrB
 import "C"
 import "unsafe"
 
-// VectorReduceMonoidValue reduces all stored values into a single scalar.
+// VectorReduce reduces all stored values into a single scalar.
 //
 // As an exceptional case, the forGraphBLASGo version of this GraphBLAS function
 // does not provide a way to accumulate the result with an already existing value.
@@ -27,7 +27,7 @@ import "unsafe"
 //
 // GraphBLAS execution errors that may cause a panic:
 //   - [InvalidObject], [OutOfMemory], [Panic]
-func VectorReduceMonoidValue[D any](
+func VectorReduce[D any](
 	op Monoid[D],
 	u Vector[D],
 	desc *Descriptor,
@@ -169,14 +169,9 @@ func VectorReduceMonoidValue[D any](
 	return
 }
 
-// Reduce is the method variant of [VectorReduceMonoidValue].
-func (vector Vector[D]) Reduce(op Monoid[D], desc *Descriptor) (val D, err error) {
-	return VectorReduceMonoidValue(op, vector, desc)
-}
-
 // VectorReduceMonoidScalar reduces all stored values into a single scalar.
 //
-// To reduce the stored values into a non-opaque variable, use [VectorReduceMonoidValue].
+// To reduce the stored values into a non-opaque variable, use [VectorReduce].
 //
 // To use a [BinaryOp] instead of a [Monoid], use [VectorReduceBinaryOpScalar].
 //
@@ -217,16 +212,6 @@ func VectorReduceMonoidScalar[D any](
 	return makeError(info)
 }
 
-// VectorReduceMonoid is the method variant of [VectorReduceMonoidScalar].
-func (scalar Scalar[D]) VectorReduceMonoid(
-	accum *BinaryOp[D, D, D],
-	op Monoid[D],
-	u Vector[D],
-	desc *Descriptor,
-) error {
-	return VectorReduceMonoidScalar(scalar, accum, op, u, desc)
-}
-
 // VectorReduceBinaryOpScalar is like [VectorReduceMonoidScalar], except that a [BinaryOp] is used instead of a [Monoid]
 // to specify the reduction operator.
 //
@@ -248,17 +233,7 @@ func VectorReduceBinaryOpScalar[D any](
 	return makeError(info)
 }
 
-// VectorReduceBinaryOp is the method variant of [VectorReduceBinaryOpScalar].
-func (scalar Scalar[D]) VectorReduceBinaryOp(
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	u Vector[D],
-	desc *Descriptor,
-) error {
-	return VectorReduceBinaryOpScalar(scalar, accum, op, u, desc)
-}
-
-// MatrixReduceMonoidValue reduces all stored values into a single scalar.
+// MatrixReduce reduces all stored values into a single scalar.
 //
 // As an exceptional case, the forGraphBLASGo version of this GraphBLAS function
 // does not provide a way to accumulate the result with an already existing value.
@@ -281,7 +256,7 @@ func (scalar Scalar[D]) VectorReduceBinaryOp(
 //
 // GraphBLAS execution errors that may cause a panic:
 //   - [InvalidObject], [OutOfMemory], [Panic]
-func MatrixReduceMonoidValue[D any](
+func MatrixReduce[D any](
 	op Monoid[D],
 	a Matrix[D],
 	desc *Descriptor,
@@ -423,14 +398,9 @@ func MatrixReduceMonoidValue[D any](
 	return
 }
 
-// Reduce is the method variant of [MatrixReduceMonoidValue].
-func (matrix Matrix[D]) Reduce(op Monoid[D], desc *Descriptor) (val D, err error) {
-	return MatrixReduceMonoidValue(op, matrix, desc)
-}
-
 // MatrixReduceMonoidScalar reduces all stored values into a single scalar.
 //
-// To reduce the stored values into a non-opaque variable, use [MatrixReduceMonoidValue].
+// To reduce the stored values into a non-opaque variable, use [MatrixReduce].
 //
 // To use a [BinaryOp] instead of a [Monoid], use [MatrixReduceBinaryOpScalar].
 //
@@ -471,16 +441,6 @@ func MatrixReduceMonoidScalar[D any](
 	return makeError(info)
 }
 
-// MatrixReduceMonoid is the method variant of [MatrixReduceMonoidScalar].
-func (scalar Scalar[D]) MatrixReduceMonoid(
-	accum *BinaryOp[D, D, D],
-	op Monoid[D],
-	a Matrix[D],
-	desc *Descriptor,
-) error {
-	return MatrixReduceMonoidScalar(scalar, accum, op, a, desc)
-}
-
 // MatrixReduceBinaryOpScalar is like [MatrixReduceMonoidScalar], except that a [BinaryOp] is used instead of a [Monoid]
 // to specify the reduction operator.
 //
@@ -502,21 +462,11 @@ func MatrixReduceBinaryOpScalar[D any](
 	return makeError(info)
 }
 
-// MatrixReduceBinaryOp is the method variant of [MatrixReduceBinaryOpScalar].
-func (scalar Scalar[D]) MatrixReduceBinaryOp(
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	a Matrix[D],
-	desc *Descriptor,
-) error {
-	return MatrixReduceBinaryOpScalar(scalar, accum, op, a, desc)
-}
-
-// MatrixReduceMonoidVector performs a reduction across rows of a matrix to produce
+// MatrixReduceMonoid performs a reduction across rows of a matrix to produce
 // a vector. If reduction down columns is desired, the input matrix should be transposed
 // using the descriptor.
 //
-// To use a [BinaryOp] instead of a [Monoid], use [MatrixReduceBinaryOpVector].
+// To use a [BinaryOp] instead of a [Monoid], use [MatrixReduceBinaryOp].
 //
 // Parameters:
 //
@@ -543,7 +493,7 @@ func (scalar Scalar[D]) MatrixReduceBinaryOp(
 //
 // GraphBLAS execution errors that may cause a panic:
 //   - [InvalidObject], [OutOfMemory], [Panic]
-func MatrixReduceMonoidVector[D any](
+func MatrixReduceMonoid[D any](
 	w Vector[D],
 	mask *Vector[bool],
 	accum *BinaryOp[D, D, D],
@@ -559,24 +509,13 @@ func MatrixReduceMonoidVector[D any](
 	return makeError(info)
 }
 
-// MatrixReduceMonoid is the method variant of [MatrixReduceMonoidVector].
-func (vector Vector[D]) MatrixReduceMonoid(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op Monoid[D],
-	a Matrix[D],
-	desc *Descriptor,
-) error {
-	return MatrixReduceMonoidVector(vector, mask, accum, op, a, desc)
-}
-
-// MatrixReduceBinaryOpVector is like [MatrixReduceMonoidVector], except that a [BinaryOp] is used instead of a [Monoid]
+// MatrixReduceBinaryOp is like [MatrixReduceMonoid], except that a [BinaryOp] is used instead of a [Monoid]
 // to specify the reduction operator.
 //
 // SuiteSparse:GraphBLAS supports this function only, if op is a built-in binary operator,
 // and corresponds to a built-in monoid. For other binary operators, including user-defined
 // ones, [NotImplemented] is returned.
-func MatrixReduceBinaryOpVector[D any](
+func MatrixReduceBinaryOp[D any](
 	w Vector[D],
 	mask *Vector[bool],
 	accum *BinaryOp[D, D, D],
@@ -590,15 +529,4 @@ func MatrixReduceBinaryOpVector[D any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// MatrixReduceBinaryOp is the method variant of [MatrixReduceBinaryOpVector].
-func (vector Vector[D]) MatrixReduceBinaryOp(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	a Matrix[D],
-	desc *Descriptor,
-) error {
-	return MatrixReduceBinaryOpVector(vector, mask, accum, op, a, desc)
 }

@@ -83,13 +83,13 @@ func MaximalIndependentSet(A GrB.Matrix[bool]) (iset GrB.Vector[bool], err error
 	defer func() {
 		GrB.OK(degrees.Free())
 	}()
-	GrB.OK(degrees.MatrixReduceBinaryOp(nil, nil, GrB.Plus[float64](), GrB.MatrixView[float64, bool](A), nil))
+	GrB.OK(GrB.MatrixReduceBinaryOp(degrees, nil, nil, GrB.Plus[float64](), GrB.MatrixView[float64, bool](A), nil))
 
 	// Isolated vertices are not candidates: candidates[degrees != 0] = true
-	GrB.OK(candidates.AssignConstant(degrees.AsMask(), nil, true, GrB.All(n), nil))
+	GrB.OK(GrB.VectorAssignConstant(candidates, degrees.AsMask(), nil, true, GrB.All(n), nil))
 
 	// add all singletons to iset: iset[degree == 0] = 1
-	GrB.OK(iset.AssignConstant(degrees.AsMask(), nil, true, GrB.All(n), nil))
+	GrB.OK(GrB.VectorAssignConstant(iset, degrees.AsMask(), nil, true, GrB.All(n), nil))
 
 	// Iterate while there are candidates to check.
 	nvals, err := candidates.Nvals()
@@ -99,18 +99,18 @@ func MaximalIndependentSet(A GrB.Matrix[bool]) (iset GrB.Vector[bool], err error
 		GrB.OK(GrB.VectorApply(prob, &candidates, nil, setRandom, GrB.VectorView[uint32, float64](degrees), GrB.DescR))
 
 		// compute the max probability of all neighbors
-		GrB.OK(neighborMax.MxV(&candidates, nil, GrB.MaxSecondSemiring[float32](), GrB.MatrixView[float32, bool](A), prob, GrB.DescR))
+		GrB.OK(GrB.MxV(neighborMax, &candidates, nil, GrB.MaxSecondSemiring[float32](), GrB.MatrixView[float32, bool](A), prob, GrB.DescR))
 
 		// select vertex if its probability is larger than all its active neighbors,
 		// and apply a "masked no-op" to remove stored falses
 		GrB.OK(GrB.VectorEWiseAddBinaryOp(newMembers, nil, nil, GrB.Gt[float32](), prob, neighborMax, nil))
-		GrB.OK(newMembers.Apply(&newMembers, nil, GrB.Identity[bool](), newMembers, GrB.DescR))
+		GrB.OK(GrB.VectorApply(newMembers, &newMembers, nil, GrB.Identity[bool](), newMembers, GrB.DescR))
 
 		// add new members to independent set
-		GrB.OK(iset.EWiseAddBinaryOp(nil, nil, GrB.LorBool, iset, newMembers, nil))
+		GrB.OK(GrB.VectorEWiseAddBinaryOp(iset, nil, nil, GrB.LorBool, iset, newMembers, nil))
 
 		// remove new members from set of candidates c = c & !new
-		GrB.OK(candidates.EWiseMultBinaryOp(&newMembers, nil, GrB.LandBool, candidates, candidates, GrB.DescRC))
+		GrB.OK(GrB.VectorEWiseMultBinaryOp(candidates, &newMembers, nil, GrB.LandBool, candidates, candidates, GrB.DescRC))
 
 		nvals, err = candidates.Nvals()
 		GrB.OK(err)
@@ -119,8 +119,8 @@ func MaximalIndependentSet(A GrB.Matrix[bool]) (iset GrB.Vector[bool], err error
 		}
 
 		// Neighbors of new members can also be removed from candidates
-		GrB.OK(newNeighbors.MxV(&candidates, nil, GrB.LorLandSemiringBool, A, newMembers, nil))
-		GrB.OK(candidates.EWiseMultBinaryOp(&newNeighbors, nil, GrB.LandBool, candidates, candidates, GrB.DescRC))
+		GrB.OK(GrB.MxV(newNeighbors, &candidates, nil, GrB.LorLandSemiringBool, A, newMembers, nil))
+		GrB.OK(GrB.VectorEWiseMultBinaryOp(candidates, &newNeighbors, nil, GrB.LandBool, candidates, candidates, GrB.DescRC))
 
 		nvals, err = candidates.Nvals()
 		GrB.OK(err)

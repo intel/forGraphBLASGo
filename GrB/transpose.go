@@ -40,13 +40,3 @@ func Transpose[D any](
 	}
 	return makeError(info)
 }
-
-// Transpose is the method variant of [Transpose].
-func (matrix Matrix[D]) Transpose(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	a Matrix[D],
-	desc *Descriptor,
-) error {
-	return Transpose(matrix, mask, accum, a, desc)
-}

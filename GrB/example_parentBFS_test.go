@@ -42,15 +42,15 @@ func ParentBreadthFirstSearch(A GrB.Matrix[int], s GrB.Index) (parents GrB.Vecto
 
 	for nvals := 1; nvals > 0; {
 		// convert all stored values in wavefront to their 0-based index
-		GrB.OK(wavefront.ApplyIndexOp(nil, nil, GrB.RowIndex[int, int](), wavefront, 0, nil))
+		GrB.OK(GrB.VectorApplyIndexOp(wavefront, nil, nil, GrB.RowIndex[int, int](), wavefront, 0, nil))
 
 		// "First" because left-multiplying wavefront rows. Masking out the parent
 		// list ensures wavefront values do not overwrite parents already stored.
-		GrB.OK(wavefront.VxM(parents.AsMask(), nil, GrB.MinFirstSemiring[int](), wavefront, A, GrB.DescRSC))
+		GrB.OK(GrB.VxM(wavefront, parents.AsMask(), nil, GrB.MinFirstSemiring[int](), wavefront, A, GrB.DescRSC))
 
 		// Don't need to mask here since we did it in VxM. Merges new parents in
 		// current wavefrontwith existing parents: parents += wavefront
-		GrB.OK(parents.Apply(nil, &plusInt, GrB.Identity[int](), wavefront, nil))
+		GrB.OK(GrB.VectorApply(parents, nil, &plusInt, GrB.Identity[int](), wavefront, nil))
 
 		nvals, err = wavefront.Nvals()
 		GrB.OK(err)

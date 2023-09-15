@@ -47,12 +47,12 @@ func LevelBreadthFirstSearch(A GrB.Matrix[bool], s GrB.Index) (v GrB.Vector[int]
 		// next level (start with 1)
 		d++
 		// v[q] = d
-		GrB.OK(v.AssignConstant(&q, nil, d, GrB.All(n), nil))
+		GrB.OK(GrB.VectorAssignConstant(v, &q, nil, d, GrB.All(n), nil))
 		// q [!v] = q ||.&& A ; finds all the unvisited successors from current q
-		GrB.OK(q.VxM(v.AsMask(), nil, GrB.LorLandSemiringBool, q, A, GrB.DescRC))
+		GrB.OK(GrB.VxM(q, v.AsMask(), nil, GrB.LorLandSemiringBool, q, A, GrB.DescRC))
 
 		// succ = ||(q)
-		succ, err = q.Reduce(GrB.LorMonoidBool, nil)
+		succ, err = GrB.VectorReduce(GrB.LorMonoidBool, q, nil)
 		GrB.OK(err)
 	}
 

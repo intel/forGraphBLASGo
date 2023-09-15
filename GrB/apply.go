@@ -46,17 +46,6 @@ func VectorApply[Dw, Du any](
 	return makeError(info)
 }
 
-// Apply is the method variant of [VectorApply].
-func (vector Vector[D]) Apply(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op UnaryOp[D, D],
-	u Vector[D],
-	desc *Descriptor,
-) error {
-	return VectorApply(vector, mask, accum, op, u, desc)
-}
-
 // MatrixApply computes the transformation of the values of the elements of a matrix
 // using a unary function.
 //
@@ -97,17 +86,6 @@ func MatrixApply[DC, DA any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// Apply is the method variant of [MatrixApply].
-func (matrix Matrix[D]) Apply(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op UnaryOp[D, D],
-	a Matrix[D],
-	desc *Descriptor,
-) error {
-	return MatrixApply(matrix, mask, accum, op, a, desc)
 }
 
 // VectorApplyBinaryOp1st computes the transformation of the values of the stored elements of a vector using a binary
@@ -204,18 +182,6 @@ func VectorApplyBinaryOp1st[Dw, D, Du any](
 	return makeError(info)
 }
 
-// ApplyBinaryOp1st in the method variant of [VectorApplyBinaryOp1st].
-func (vector Vector[D]) ApplyBinaryOp1st(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	val D,
-	u Vector[D],
-	desc *Descriptor,
-) error {
-	return VectorApplyBinaryOp1st(vector, mask, accum, op, val, u, desc)
-}
-
 // VectorApplyBinaryOp1stScalar is like [VectorApplyBinaryOp1st], except that the scalar value is passed as a [Scalar]
 // object. It must not be empty.
 //
@@ -239,18 +205,6 @@ func VectorApplyBinaryOp1stScalar[Dw, D, Du any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// ApplyBinaryOp1stScalar is the method variant of [VectorApplyBinaryOp1stScalar].
-func (vector Vector[D]) ApplyBinaryOp1stScalar(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	val Scalar[D],
-	u Vector[D],
-	desc *Descriptor,
-) error {
-	return VectorApplyBinaryOp1stScalar(vector, mask, accum, op, val, u, desc)
 }
 
 // VectorApplyBinaryOp2nd is like [VectorApplyBinaryOp1st], except that the stored elements of the vector are
@@ -314,18 +268,6 @@ func VectorApplyBinaryOp2nd[Dw, Du, D any](
 	return makeError(info)
 }
 
-// ApplyBinaryOp2nd is the method variant of [VectorApplyBinaryOp2nd].
-func (vector Vector[D]) ApplyBinaryOp2nd(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	u Vector[D],
-	val D,
-	desc *Descriptor,
-) error {
-	return VectorApplyBinaryOp2nd(vector, mask, accum, op, u, val, desc)
-}
-
 // VectorApplyBinaryOp2ndScalar is like [VectorApplyBinaryOp2nd], except that the scalar value is passed as a
 // [Scalar] object. It must not be empty.
 //
@@ -349,18 +291,6 @@ func VectorApplyBinaryOp2ndScalar[Dw, Du, D any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// ApplyBinaryOp2ndScalar is the method variant of [VectorApplyBinaryOp2ndScalar].
-func (vector Vector[D]) ApplyBinaryOp2ndScalar(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	u Vector[D],
-	val Scalar[D],
-	desc *Descriptor,
-) error {
-	return VectorApplyBinaryOp2ndScalar(vector, mask, accum, op, u, val, desc)
 }
 
 // MatrixApplyBinaryOp1st computes the transformation of the values of the stored elements of a matrix using a binary
@@ -457,18 +387,6 @@ func MatrixApplyBinaryOp1st[DC, D, DA any](
 	return makeError(info)
 }
 
-// ApplyBinaryOp1st is the method variant of [MatrixApplyBinaryOp1st].
-func (matrix Matrix[D]) ApplyBinaryOp1st(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	val D,
-	a Matrix[D],
-	desc *Descriptor,
-) error {
-	return MatrixApplyBinaryOp1st(matrix, mask, accum, op, val, a, desc)
-}
-
 // MatrixApplyBinaryOp1stScalar is like [MatrixApplyBinaryOp1st], except that the scalar value is passed as a
 // [Scalar] object. It must not be empty.
 //
@@ -492,18 +410,6 @@ func MatrixApplyBinaryOp1stScalar[DC, D, DA any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// ApplyBinaryOp1stScalar is the method variant of [MatrixapplyBinaryOp1stScalar].
-func (matrix Matrix[D]) ApplyBinaryOp1stScalar(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	val Scalar[D],
-	a Matrix[D],
-	desc *Descriptor,
-) error {
-	return MatrixApplyBinaryOp1stScalar(matrix, mask, accum, op, val, a, desc)
 }
 
 // MatrixApplyBinaryOp2nd is like [MatrixApplyBinaryOp1st], except that the stored elements of the matrix are passed
@@ -567,18 +473,6 @@ func MatrixApplyBinaryOp2nd[DC, DA, D any](
 	return makeError(info)
 }
 
-// ApplyBinaryOp2nd is the method variant of [MatrixApplyBinaryOp2nd].
-func (matrix Matrix[D]) ApplyBinaryOp2nd(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	a Matrix[D],
-	val D,
-	desc *Descriptor,
-) error {
-	return MatrixApplyBinaryOp2nd(matrix, mask, accum, op, a, val, desc)
-}
-
 // MatrixApplyBinaryOp2ndScalar is like [MatrixApplyBinaryOp2nd], except that the scalar value is passed as a
 // [Scalar] object. It must not be empty.
 //
@@ -602,18 +496,6 @@ func MatrixApplyBinaryOp2ndScalar[DC, DA, D any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// ApplyBinaryOp2ndScalar is the method variant of [MatrixApplyBinaryOp2ndScalar].
-func (matrix Matrix[D]) ApplyBinaryOp2ndScalar(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	a Matrix[D],
-	val Scalar[D],
-	desc *Descriptor,
-) error {
-	return MatrixApplyBinaryOp2ndScalar(matrix, mask, accum, op, a, val, desc)
 }
 
 // VectorApplyIndexOp computes the transformation of the values of the stored elements of a vector using an index unary
@@ -708,18 +590,6 @@ func VectorApplyIndexOp[Dw, Du, D any](
 	return makeError(info)
 }
 
-// ApplyIndexOp is the method variant of [VectorApplyIndexOp].
-func (vector Vector[D]) ApplyIndexOp(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op IndexUnaryOp[D, D, D],
-	u Vector[D],
-	val D,
-	desc *Descriptor,
-) error {
-	return VectorApplyIndexOp(vector, mask, accum, op, u, val, desc)
-}
-
 // VectorApplyIndexOpScalar is like [VectorApplyIndexOp], except that the scalar value is passed as a
 // [Scalar] object. It must not be empty.
 //
@@ -743,18 +613,6 @@ func VectorApplyIndexOpScalar[Dw, Du, D any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// ApplyIndexOpScalar is the method variant of [VectorApplyIndexOpScalar].
-func (vector Vector[D]) ApplyIndexOpScalar(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	op IndexUnaryOp[D, D, D],
-	u Vector[D],
-	val Scalar[D],
-	desc *Descriptor,
-) error {
-	return VectorApplyIndexOpScalar(vector, mask, accum, op, u, val, desc)
 }
 
 // MatrixApplyIndexOp computes the transformation of the values of the stored elements of a matrix using an index unary
@@ -849,18 +707,6 @@ func MatrixApplyIndexOp[DC, DA, D any](
 	return makeError(info)
 }
 
-// ApplyIndexOp is the method variant of [MatrixApplyIndexOp].
-func (matrix Matrix[D]) ApplyIndexOp(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op IndexUnaryOp[D, D, D],
-	a Matrix[D],
-	val D,
-	desc *Descriptor,
-) error {
-	return MatrixApplyIndexOp(matrix, mask, accum, op, a, val, desc)
-}
-
 // MatrixApplyIndexOpScalar is like [MatrixApplyIndexOp], except that the scalar value is passed as a
 // [Scalar] object. It must not be empty.
 //
@@ -884,16 +730,4 @@ func MatrixApplyIndexOpScalar[DC, DA, D any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// ApplyIndexOpScalar is the method variant of [MatrixApplyIndexOpScalar].
-func (matrix Matrix[D]) ApplyIndexOpScalar(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op IndexUnaryOp[D, D, D],
-	a Matrix[D],
-	val Scalar[D],
-	desc *Descriptor,
-) error {
-	return MatrixApplyIndexOpScalar(matrix, mask, accum, op, a, val, desc)
 }

@@ -52,18 +52,6 @@ func KroneckerSemiring[DC, DA, DB any](
 	return makeError(info)
 }
 
-// KroneckerSemiring is the method variant of [KroneckerSemiring].
-func (matrix Matrix[D]) KroneckerSemiring(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op Semiring[D, D, D],
-	a Matrix[D],
-	b Matrix[D],
-	desc *Descriptor,
-) error {
-	return KroneckerSemiring(matrix, mask, accum, op, a, b, desc)
-}
-
 // KroneckerMonoid is like [KroneckerSemiring], except that a [Monoid] is used instead of a [Semiring]
 // to specify the binary operator op. The identity element of the monoid is ignored.
 func KroneckerMonoid[D any](
@@ -83,18 +71,6 @@ func KroneckerMonoid[D any](
 	return makeError(info)
 }
 
-// KroneckerMonoid is the method variant of [KroneckerMonoid].
-func (matrix Matrix[D]) KroneckerMonoid(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op Monoid[D],
-	a Matrix[D],
-	b Matrix[D],
-	desc *Descriptor,
-) error {
-	return KroneckerMonoid(matrix, mask, accum, op, a, b, desc)
-}
-
 // KroneckerBinaryOp is like [KroneckerSemiring], except that a [BinaryOp] is used instead of a [Semiring]
 // to specify the binary operator op.
 func KroneckerBinaryOp[DC, DA, DB any](
@@ -112,16 +88,4 @@ func KroneckerBinaryOp[DC, DA, DB any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// KroneckerBinaryOp is the method variant of [KroneckerBinaryOp].
-func (matrix Matrix[D]) KroneckerBinaryOp(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	op BinaryOp[D, D, D],
-	a Matrix[D],
-	b Matrix[D],
-	desc *Descriptor,
-) error {
-	return KroneckerBinaryOp(matrix, mask, accum, op, a, b, desc)
 }

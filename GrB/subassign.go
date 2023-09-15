@@ -30,19 +30,6 @@ func VectorSubassign[D any](
 	return makeError(info)
 }
 
-// Subassign is the method variant of [VectorSubassign].
-//
-// Subassign is a SuiteSparse:GraphBLAS extension.
-func (vector Vector[D]) Subassign(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	u Vector[D],
-	indices []int,
-	desc *Descriptor,
-) error {
-	return VectorSubassign(vector, mask, accum, u, indices, desc)
-}
-
 // MatrixSubassign is the same as [MatrixAssign], except that the mask
 // is restricted to the passed indices, and if the [Replace] descriptor
 // is set for [Outp], then entries outside of the passed indices
@@ -71,17 +58,6 @@ func MatrixSubassign[D any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// Subassign is the method variant of [MatrixSubassign].
-func (matrix Matrix[D]) Subassign(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	a Matrix[D],
-	rowIndices, colIndices []int,
-	desc *Descriptor,
-) error {
-	return MatrixSubassign(matrix, mask, accum, a, rowIndices, colIndices, desc)
 }
 
 // MatrixColSubassign is the same as [MatrixColAssign], except that the mask
@@ -114,20 +90,6 @@ func MatrixColSubassign[D any](
 	return makeError(info)
 }
 
-// ColSubassign is the method variant of [MatrixColSubassign].
-//
-// ColSubassign is a SuiteSparse:GraphBLAS extension.
-func (matrix Matrix[D]) ColSubassign(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	u Vector[D],
-	rowIndices []int,
-	colIndex int,
-	desc *Descriptor,
-) error {
-	return MatrixColSubassign(matrix, mask, accum, u, rowIndices, colIndex, desc)
-}
-
 // MatrixRowSubassign is the same as [MatrixRowAssign], except that the mask
 // is restricted to the passed indices, and if the [Replace] descriptor
 // is set for [Outp], then entries outside of the passed indices
@@ -156,20 +118,6 @@ func MatrixRowSubassign[D any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// RowSubassign is the method variant of [MatrixRowSubassign].
-//
-// is a SuiteSparse:GraphBLAS extension.
-func (matrix Matrix[D]) RowSubassign(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	u Vector[D],
-	rowIndex int,
-	colIndices []int,
-	desc *Descriptor,
-) error {
-	return MatrixRowSubassign(matrix, mask, accum, u, rowIndex, colIndices, desc)
 }
 
 // VectorSubassignConstant is the same as [VectorAssignConstant], except that the mask
@@ -240,19 +188,6 @@ func VectorSubassignConstant[D any](
 	return makeError(info)
 }
 
-// SubassignConstant is the method variant of [VectorSubassignConstant].
-//
-// SubassignConstant is a SuiteSparse:GraphBLAS extension.
-func (vector Vector[D]) SubassignConstant(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	val D,
-	indices []int,
-	desc *Descriptor,
-) error {
-	return VectorSubassignConstant(vector, mask, accum, val, indices, desc)
-}
-
 // VectorSubassignScalar is the same as [VectorAssignScalar], except that the mask
 // is restricted to the passed indices, and if the [Replace] descriptor
 // is set for [Outp], then entries outside of the passed indices
@@ -277,19 +212,6 @@ func VectorSubassignScalar[D any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// SubassignScalar is the method variant of [VectorSubassignScalar].
-//
-// SubassignScalar is a SuiteSparse:GraphBLAS extension.
-func (vector Vector[D]) SubassignScalar(
-	mask *Vector[bool],
-	accum *BinaryOp[D, D, D],
-	val Scalar[D],
-	indices []int,
-	desc *Descriptor,
-) error {
-	return VectorSubassignScalar(vector, mask, accum, val, indices, desc)
 }
 
 // MatrixSubassignConstant is the same as [MatrixAssignConstant], except that the mask
@@ -364,19 +286,6 @@ func MatrixSubassignConstant[D any](
 	return makeError(info)
 }
 
-// SubassignConstant is the method variant of [MatrixSubassignConstant].
-//
-// MatrixSubassignConstant is a SuiteSparse:GraphBLAS extension.
-func (matrix Matrix[D]) SubassignConstant(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	val D,
-	rowIndices, colIndices []int,
-	desc *Descriptor,
-) error {
-	return MatrixSubassignConstant(matrix, mask, accum, val, rowIndices, colIndices, desc)
-}
-
 // MatrixSubassignScalar is the same as [MatrixSubassignScalar], except that the mask
 // is restricted to the passed indices, and if the [Replace] descriptor
 // is set for [Outp], then entries outside of the passed indices
@@ -405,17 +314,4 @@ func MatrixSubassignScalar[D any](
 		return nil
 	}
 	return makeError(info)
-}
-
-// SubassignScalar is the method variant of [MatrixSubassignScalar].
-//
-// is a SuiteSparse:GraphBLAS extension.
-func (matrix Matrix[D]) SubassignScalar(
-	mask *Matrix[bool],
-	accum *BinaryOp[D, D, D],
-	val Scalar[D],
-	rowIndices, colIndices []int,
-	desc *Descriptor,
-) error {
-	return MatrixSubassignScalar(matrix, mask, accum, val, rowIndices, colIndices, desc)
 }

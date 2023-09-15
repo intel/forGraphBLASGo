@@ -32,10 +32,10 @@ func TriangleCount[T GrB.Predefined](A GrB.Matrix[T]) (count int, err error) {
 	}()
 
 	// C<L> = L +.* L
-	GrB.OK(C.MxM(&L, nil, GrB.PlusTimesSemiring[int](), Lint, Lint, nil))
+	GrB.OK(GrB.MxM(C, &L, nil, GrB.PlusTimesSemiring[int](), Lint, Lint, nil))
 
 	// 1-norm of C
-	return C.Reduce(GrB.PlusMonoid[int](), nil)
+	return GrB.MatrixReduce(GrB.PlusMonoid[int](), C, nil)
 }
 
 func Example_triangleCount() {
@@ -76,7 +76,7 @@ func Example_triangleCount() {
 	OK(A.SetElement(true, 10, 14))
 	OK(A.SetElement(true, 11, 14))
 
-	OK(A.EWiseAddBinaryOp(nil, nil, GrB.LorBool, A, A, GrB.DescT1))
+	OK(GrB.MatrixEWiseAddBinaryOp(A, nil, nil, GrB.LorBool, A, A, GrB.DescT1))
 
 	count, err := TriangleCount(A)
 	OK(err)
