@@ -3,7 +3,6 @@ package GrB
 // #include "GraphBLAS.h"
 import "C"
 import (
-	"log"
 	"unsafe"
 )
 
@@ -471,7 +470,6 @@ func (matrix Matrix[D]) PackCSC(ap, ai *SystemSlice[int], ax *SystemSlice[D], is
 		C.bool(iso), C.bool(jumbled), cdesc,
 	))
 	if info != success {
-		log.Println(ap, ai, ax)
 		if apCopied {
 			uap.Free()
 		}
