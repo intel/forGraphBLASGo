@@ -203,7 +203,7 @@ func hasGoPointer(t reflect.Type) bool {
 	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Pointer, reflect.Slice, reflect.String:
 		return true
 	case reflect.Struct:
-		for f, n := 0, t.NumField(); f < n; f++ {
+		for f := range t.NumField() {
 			if hasGoPointer(t.Field(f).Type) {
 				return true
 			}
