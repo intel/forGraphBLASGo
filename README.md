@@ -1,3 +1,8 @@
+# THIS PROJECT IS ARCHIVED   
+Intel will not provide or guarantee development of or support for this project, including but not limited to, maintenance, bug fixes, new releases or updates.  
+Patches to this project are no longer accepted by Intel.  
+ If you have an ongoing need to use this project, are interested in independently developing it, or would like to maintain patches for the community, please create your own fork of the project.  
+  
 # Intel® Generic Implementation of GraphBLAS* for Go*
 
 This library is a binding for GraphBLAS, and more specifically for the SuiteSparse:GraphBLAS implementation of the GraphBLAS specification, for the Go programming language. It has been tested against version 8.0.0, 8.0.1, and 8.0.2 of SuiteSparse:GraphBLAS.
